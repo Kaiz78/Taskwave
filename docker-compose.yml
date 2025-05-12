@@ -1,0 +1,53 @@
+version: '3.8'
+services:
+  client:
+    build:
+      context: ./client
+      dockerfile: docker/Dockerfile
+    ports:
+      - "5173:5173"
+    volumes:
+      - ./client:/app
+    depends_on:
+      - server
+    env_file:
+      - ./client/.env
+    environment:
+      - VITE_API_URL=http://server:5000
+    networks:
+      - taskwave-network
+
+  server:
+    build:
+      context: ./server
+      dockerfile: docker/Dockerfile
+    ports:
+      - "5000:5000"
+    volumes:
+      - ./server:/app
+    depends_on:
+      - mongodb
+    env_file:
+      - ./server/.env
+    environment:
+      - NODE_ENV=development
+    networks:
+      - taskwave-network
+
+  mongodb:
+    image: mongo:latest
+    ports:
+      - "27018:27017"
+    volumes:
+      - mongodb-data:/data/db
+      - ./mongo-init.js:/docker-entrypoint-initdb.d/mongo-init.js
+    command: ["--replSet", "rs0", "--bind_ip_all"]
+    networks:
+      - taskwave-network
+
+networks:
+  taskwave-network:
+    driver: bridge
+
+volumes:
+  mongodb-data:
