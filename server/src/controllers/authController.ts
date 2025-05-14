@@ -78,10 +78,6 @@ export const discordCallback = asyncWrapper(async (req: Request, res: Response) 
       return sendResponse(res, 400, null, 'Échec de la récupération des données utilisateur Discord');
     }
 
-
-
-
-
     // Rechercher si l'utilisateur existe déjà par email
     let user = await prisma.user.findUnique({
       where: { email: discordUser.email }

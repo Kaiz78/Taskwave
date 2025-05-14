@@ -12,8 +12,6 @@ services:
       - server
     env_file:
       - ./client/.env
-    environment:
-      - VITE_API_URL=http://server:5000
     networks:
       - taskwave-network
 
@@ -29,8 +27,6 @@ services:
       - mongodb
     env_file:
       - ./server/.env
-    environment:
-      - NODE_ENV=development
     networks:
       - taskwave-network
 
