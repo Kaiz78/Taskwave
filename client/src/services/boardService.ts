@@ -129,8 +129,8 @@ export const boardService = {
       
       // Conversion des chaînes de date en objets Date
       return {
-        ...data,
-        createdAt: new Date(data.createdAt)
+        ...data?.data?.board,
+        createdAt: new Date(data?.data?.board.createdAt)
       };
       
     } catch (error) {
@@ -184,8 +184,8 @@ export const boardService = {
       
       // Conversion des chaînes de date en objets Date
       return {
-        ...data,
-        createdAt: new Date(data.createdAt)
+        ...data.data.board,
+        createdAt: new Date(data.data.board.createdAt)
       };
       
     } catch (error) {
@@ -272,8 +272,8 @@ export const boardService = {
       
       // Conversion des chaînes de date en objets Date
       return {
-        ...data,
-        createdAt: new Date(data.createdAt)
+        ...data.data.board,
+        createdAt: new Date(data.data.board.createdAt)
       };
       
     } catch (error) {

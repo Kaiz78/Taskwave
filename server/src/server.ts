@@ -2,6 +2,7 @@ import express from 'express';
 import cors from 'cors';
 import { PrismaClient } from '@prisma/client';
 import authRoutes from './routes/authRoutes';
+import boardRoutes from './routes/boardRoutes';
 import errorHandler from './utils/errorHandler';
 import corsOptions from './config/corsOptions';
 
@@ -25,6 +26,7 @@ prisma.$connect()
 // Routes
 app.get('/health', (_, res) => res.send('API is running'));
 app.use('/api/auth', authRoutes);
+app.use('/api/boards', boardRoutes);
 
 
 // Gestion des erreurs

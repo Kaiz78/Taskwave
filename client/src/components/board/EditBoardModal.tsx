@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
@@ -10,20 +10,14 @@ import {
 } from "../../components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-// Import direct du composant textarea sans le chemin d'alias
 import { Textarea } from "../../components/ui/textarea";
+import type { BoardData } from "@/types/board.types";
 
-// Interface pour les propriétés des nouveaux tableaux à créer
-export interface NewBoardData {
-  title: string;
-  description: string;
-  backgroundColor: string;
-}
-
-interface NewBoardModalProps {
+interface EditBoardModalProps {
   isOpen: boolean;
   onClose: () => void;
-  onCreateBoard: (boardData: NewBoardData) => void;
+  onUpdateBoard: (boardId: string, boardData: Partial<BoardData>) => void;
+  board: BoardData | null;
 }
 
 const colorOptions = [
@@ -35,16 +29,32 @@ const colorOptions = [
   { name: "Turquoise", value: "#1abc9c" },
 ];
 
-export function NewBoardModal({
+export function EditBoardModal({
   isOpen,
   onClose,
-  onCreateBoard,
-}: NewBoardModalProps) {
-  const [formData, setFormData] = useState<NewBoardData>({
+  onUpdateBoard,
+  board,
+}: EditBoardModalProps) {
+  const [formData, setFormData] = useState<{
+    title: string;
+    description: string;
+    backgroundColor: string;
+  }>({
     title: "",
     description: "",
     backgroundColor: colorOptions[0].value,
   });
+
+  // Mettre à jour le formulaire quand un tableau est sélectionné pour l'édition
+  useEffect(() => {
+    if (board) {
+      setFormData({
+        title: board.title,
+        description: board.description || "",
+        backgroundColor: board.backgroundColor || colorOptions[0].value,
+      });
+    }
+  }, [board]);
 
   const handleInputChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
@@ -59,14 +69,9 @@ export function NewBoardModal({
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    onCreateBoard(formData);
-
-    // Réinitialiser le formulaire
-    setFormData({
-      title: "",
-      description: "",
-      backgroundColor: colorOptions[0].value,
-    });
+    if (board) {
+      onUpdateBoard(board.id, formData);
+    }
     onClose();
   };
 
@@ -78,9 +83,9 @@ export function NewBoardModal({
           className="max-h-[calc(85vh-4rem)] overflow-y-auto pr-6 -mr-6"
         >
           <DialogHeader>
-            <DialogTitle>Créer un nouveau tableau</DialogTitle>
+            <DialogTitle>Modifier le tableau</DialogTitle>
             <DialogDescription>
-              Ajoutez les informations de votre tableau ci-dessous.
+              Modifiez les informations de votre tableau ci-dessous.
             </DialogDescription>
           </DialogHeader>
           <div className="grid gap-4 py-4">
@@ -108,8 +113,8 @@ export function NewBoardModal({
                 value={formData.description}
                 onChange={handleInputChange}
                 className="col-span-3 resize-y"
-                maxLength={500}
                 style={{ maxHeight: "200px" }}
+                maxLength={500}
               />
             </div>
             <div className="grid grid-cols-4 items-center gap-4">
@@ -142,7 +147,7 @@ export function NewBoardModal({
               Annuler
             </Button>
             <Button type="submit" disabled={!formData.title.trim()}>
-              Créer
+              Enregistrer
             </Button>
           </DialogFooter>
         </form>
@@ -151,4 +156,4 @@ export function NewBoardModal({
   );
 }
 
-export default NewBoardModal;
+export default EditBoardModal;

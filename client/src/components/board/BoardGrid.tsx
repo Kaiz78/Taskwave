@@ -1,31 +1,62 @@
 import { useNavigate } from "react-router-dom";
+import { useState } from "react";
 import BoardCard from "./BoardCard";
-
+import EditBoardModal from "./EditBoardModal";
+import DeleteBoardModal from "./DeleteBoardModal";
+import { useBoardStore } from "@/store/useBoardStore";
 import { FiSearch, FiDatabase } from "react-icons/fi";
-
-export interface BoardData {
-  id: string;
-  title: string;
-  description?: string;
-  backgroundColor?: string;
-  columnsCount: number;
-  tasksCount: number;
-  createdAt: Date;
-}
+import type { BoardData as BoardDataType } from "@/types/board.types";
 
 interface BoardGridProps {
-  boards: BoardData[];
+  boards: BoardDataType[];
   isFiltered?: boolean;
 }
 
 export function BoardGrid({ boards, isFiltered = false }: BoardGridProps) {
   const navigate = useNavigate();
+  const { updateBoard, deleteBoard, fetchBoardDetails } = useBoardStore();
+
+  // États pour les modaux
+  const [editModalOpen, setEditModalOpen] = useState(false);
+  const [deleteModalOpen, setDeleteModalOpen] = useState(false);
+  const [selectedBoard, setSelectedBoard] = useState<BoardDataType | null>(
+    null
+  );
 
   const handleBoardClick = (boardId: string) => {
     // Rediriger vers la page du tableau sélectionné
     navigate(`/boards/${boardId}`);
   };
 
+  const handleEditBoard = (boardId: string) => {
+    // Trouver le tableau à éditer
+    const boardToEdit = boards.find((board) => board.id === boardId);
+    if (boardToEdit) {
+      setSelectedBoard(boardToEdit);
+      setEditModalOpen(true);
+    }
+  };
+
+  const handleDeleteBoard = (boardId: string) => {
+    // Trouver le tableau à supprimer
+    const boardToDelete = boards.find((board) => board.id === boardId);
+    if (boardToDelete) {
+      setSelectedBoard(boardToDelete);
+      setDeleteModalOpen(true);
+    }
+  };
+
+  const handleViewDetails = (boardId: string) => {
+    fetchBoardDetails(boardId);
+    navigate(`/boards/${boardId}`);
+  };
+
+  // Confirmer la suppression d'un tableau
+  const confirmDeleteBoard = () => {
+    if (selectedBoard) {
+      deleteBoard(selectedBoard.id);
+    }
+  };
 
   // Afficher un message si aucun tableau n'est trouvé lors du filtrage
   if (isFiltered && boards.length === 0) {
@@ -58,15 +89,38 @@ export function BoardGrid({ boards, isFiltered = false }: BoardGridProps) {
   }
 
   return (
-    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-      {boards.map((board) => (
-        <BoardCard
-          key={board.id}
-          {...board}
-          onClick={() => handleBoardClick(board.id)}
+    <>
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+        {boards.map((board) => (
+          <BoardCard
+            key={board.id}
+            {...board}
+            onClick={() => handleBoardClick(board.id)}
+            onEdit={handleEditBoard}
+            onDelete={handleDeleteBoard}
+            onViewDetails={handleViewDetails}
+          />
+        ))}
+      </div>
+
+      {/* Modal d'édition */}
+      <EditBoardModal
+        isOpen={editModalOpen}
+        onClose={() => setEditModalOpen(false)}
+        onUpdateBoard={updateBoard}
+        board={selectedBoard}
+      />
+
+      {/* Modal de confirmation de suppression */}
+      {selectedBoard && (
+        <DeleteBoardModal
+          isOpen={deleteModalOpen}
+          boardTitle={selectedBoard.title}
+          onClose={() => setDeleteModalOpen(false)}
+          onConfirm={confirmDeleteBoard}
         />
-      ))}
-    </div>
+      )}
+    </>
   );
 }
 
