@@ -1,50 +1,80 @@
 import { useAuthStore } from "@/store/useAuthStore";
 
+import { BoardGrid } from "@/components/board/BoardGrid";
+import { SearchBar } from "@/components/board/SearchBar";
+import { FilterBar } from "@/components/board/FilterBar";
+import { useState } from "react";
+
+// Données fictives pour l'exemple
+const mockBoards = [
+  {
+    id: "1",
+    title: "Développement Taskwave",
+    description: "Suivi du développement de la plateforme Taskwave",
+    backgroundColor: "#3498db",
+    columnsCount: 4,
+    tasksCount: 12,
+    createdAt: new Date(2025, 4, 10), // 10 mai 2025
+  },
+  {
+    id: "2",
+    title: "Marketing Q2 2025",
+    description: "Campagnes marketing pour le deuxième trimestre",
+    backgroundColor: "#2ecc71",
+    columnsCount: 3,
+    tasksCount: 8,
+    createdAt: new Date(2025, 4, 15), // 15 mai 2025
+  },
+  {
+    id: "3",
+    title: "Idées de fonctionnalités",
+    description:
+      "Collection d'idées pour de nouvelles fonctionnalités à développer",
+    backgroundColor: "#e74c3c",
+    columnsCount: 2,
+    tasksCount: 5,
+    createdAt: new Date(2025, 4, 16), // 16 mai 2025
+  },
+];
+
 function App() {
   // Sélectionner individuellement chaque valeur pour éviter les re-rendus excessifs
   const username = useAuthStore((state) => state.user);
-  const email = useAuthStore((state) => state.email);
-  const avatarUrl = useAuthStore((state) => state.avatarUrl);
-  const isAuthenticated = useAuthStore((state) => state.isAuthenticated);
+  const [boards] = useState(mockBoards);
 
-  console.log({ username, email, avatarUrl, isAuthenticated });
+  const handleSearch = (query: string) => {
+    console.log("Recherche:", query);
+    // La logique de recherche sera implémentée plus tard
+  };
 
   return (
     <div className="p-6">
-      <div className="flex justify-between items-center mb-6">
-        <h1 className="text-2xl font-bold">Tableau de bord</h1>
+      <div className="flex justify-between items-center mb-8">
+        <div>
+          <h1 className="text-3xl font-bold">Mes tableaux</h1>
+          <p className="text-muted-foreground mt-1">
+            Bienvenue {username || "Utilisateur"}, gérez vos projets et tâches
+          </p>
+        </div>
       </div>
-      <p>Bienvenue sur votre tableau de bord, {username || "Utilisateur"}</p>
 
-      {/* Contenu de l'application ici */}
-      <div className="mt-4 p-4 bg-white rounded-lg shadow dark:bg-gray-800">
-        <h2 className="text-xl font-semibold mb-2">Votre profil</h2>
-        {isAuthenticated && (
-          <div className="flex items-center">
-            {avatarUrl && (
-              <img
-                src={avatarUrl}
-                alt={username || "Avatar utilisateur"}
-                className="w-16 h-16 rounded-full mr-4"
-              />
-            )}
-            <div>
-              <p>
-                <span className="font-medium">Nom:</span>{" "}
-                {username || "Non spécifié"}
-              </p>
-              <p>
-                <span className="font-medium">Email:</span>{" "}
-                {email || "Non spécifié"}
-              </p>
-              <p>
-                <span className="font-medium">Méthode de connexion:</span>{" "}
-                {"Discord"}
-              </p>
-            </div>
-          </div>
-        )}
+      {/* Barre de recherche et filtres */}
+      <div className="flex flex-col md:flex-row justify-between gap-4 mb-6">
+        <SearchBar onSearch={handleSearch} />
+        <FilterBar
+          onFilterChange={(option) => {
+            console.log("Option de tri:", option);
+            // La logique de filtrage sera implémentée plus tard
+          }}
+        />
       </div>
+
+      {/* Vue des tableaux en grille */}
+      <div className="mt-6">
+        <BoardGrid boards={boards} />
+      </div>
+
+      
     </div>
   );
 }

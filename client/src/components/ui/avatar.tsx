@@ -41,12 +41,9 @@ export const Avatar = React.forwardRef<HTMLDivElement, AvatarProps>(
 
 Avatar.displayName = "Avatar";
 
-export interface AvatarFallbackProps
-  extends React.HTMLAttributes<HTMLDivElement> {}
-
 export const AvatarFallback = React.forwardRef<
   HTMLDivElement,
-  AvatarFallbackProps
+  React.HTMLAttributes<HTMLDivElement>
 >(({ className, ...props }, ref) => (
   <div
     ref={ref}
