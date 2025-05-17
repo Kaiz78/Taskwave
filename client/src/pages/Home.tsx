@@ -1,50 +1,46 @@
 import { useAuthStore } from "@/store/useAuthStore";
-
+import { useBoardStore } from "@/store/useBoardStore";
+import { Button } from "@/components/ui/button";
+import { FiPlus } from "react-icons/fi";
 import { BoardGrid } from "@/components/board/BoardGrid";
 import { SearchBar } from "@/components/board/SearchBar";
 import { FilterBar } from "@/components/board/FilterBar";
-import { useState } from "react";
-
-// Données fictives pour l'exemple
-const mockBoards = [
-  {
-    id: "1",
-    title: "Développement Taskwave",
-    description: "Suivi du développement de la plateforme Taskwave",
-    backgroundColor: "#3498db",
-    columnsCount: 4,
-    tasksCount: 12,
-    createdAt: new Date(2025, 4, 10), // 10 mai 2025
-  },
-  {
-    id: "2",
-    title: "Marketing Q2 2025",
-    description: "Campagnes marketing pour le deuxième trimestre",
-    backgroundColor: "#2ecc71",
-    columnsCount: 3,
-    tasksCount: 8,
-    createdAt: new Date(2025, 4, 15), // 15 mai 2025
-  },
-  {
-    id: "3",
-    title: "Idées de fonctionnalités",
-    description:
-      "Collection d'idées pour de nouvelles fonctionnalités à développer",
-    backgroundColor: "#e74c3c",
-    columnsCount: 2,
-    tasksCount: 5,
-    createdAt: new Date(2025, 4, 16), // 16 mai 2025
-  },
-];
+import { useState, useEffect } from "react";
+import { NewBoardModal } from "@/components/board/NewBoardModal";
+import type { BoardSortOption } from "@/types/board.types";
 
 function App() {
   // Sélectionner individuellement chaque valeur pour éviter les re-rendus excessifs
   const username = useAuthStore((state) => state.user);
-  const [boards] = useState(mockBoards);
+  const [isModalOpen, setIsModalOpen] = useState(false);
 
+  // Utiliser le store Zustand pour la gestion des tableaux
+  const {
+    filteredBoards,
+    fetchBoards,
+    setSearchQuery,
+    setSortOption,
+    createBoard,
+    isLoading,
+    error,
+    searchQuery,
+  } = useBoardStore();
+
+  // Charger les tableaux au montage du composant
+  useEffect(() => {
+    fetchBoards();
+  }, [fetchBoards]);
+
+  // Vérifier si les résultats sont filtrés
+  const isFiltered = searchQuery.length > 0;
+
+  // Handlers pour la recherche et le filtrage
   const handleSearch = (query: string) => {
-    console.log("Recherche:", query);
-    // La logique de recherche sera implémentée plus tard
+    setSearchQuery(query);
+  };
+
+  const handleFilterChange = (option: string) => {
+    setSortOption(option as BoardSortOption);
   };
 
   return (
@@ -56,25 +52,41 @@ function App() {
             Bienvenue {username || "Utilisateur"}, gérez vos projets et tâches
           </p>
         </div>
+        <Button
+          className="flex items-center gap-1"
+          onClick={() => setIsModalOpen(true)}
+        >
+          <FiPlus className="h-4 w-4" />
+          <span>Nouveau tableau</span>
+        </Button>
       </div>
 
       {/* Barre de recherche et filtres */}
       <div className="flex flex-col md:flex-row justify-between gap-4 mb-6">
         <SearchBar onSearch={handleSearch} />
-        <FilterBar
-          onFilterChange={(option) => {
-            console.log("Option de tri:", option);
-            // La logique de filtrage sera implémentée plus tard
-          }}
-        />
+        <FilterBar onFilterChange={handleFilterChange} />
       </div>
 
       {/* Vue des tableaux en grille */}
       <div className="mt-6">
-        <BoardGrid boards={boards} />
+        {isLoading ? (
+          <div className="text-center py-8">Chargement des tableaux...</div>
+        ) : error ? (
+          <div className="text-center py-8 text-red-500">{error}</div>
+        ) : (
+          <BoardGrid boards={filteredBoards} isFiltered={isFiltered} />
+        )}
       </div>
 
-      
+      {/* Modal pour créer un nouveau tableau */}
+      <NewBoardModal
+        isOpen={isModalOpen}
+        onClose={() => setIsModalOpen(false)}
+        onCreateBoard={(boardData) => {
+          createBoard(boardData);
+          setIsModalOpen(false);
+        }}
+      />
     </div>
   );
 }

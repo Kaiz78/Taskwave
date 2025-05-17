@@ -1,0 +1,149 @@
+import { useState } from "react";
+import { Button } from "@/components/ui/button";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from "../../components/ui/dialog";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+// Import direct du composant textarea sans le chemin d'alias
+import { Textarea } from "../../components/ui/textarea";
+
+// Interface pour les propriétés des nouveaux tableaux à créer
+export interface NewBoardData {
+  title: string;
+  description: string;
+  backgroundColor: string;
+}
+
+interface NewBoardModalProps {
+  isOpen: boolean;
+  onClose: () => void;
+  onCreateBoard: (boardData: NewBoardData) => void;
+}
+
+const colorOptions = [
+  { name: "Bleu", value: "#3498db" },
+  { name: "Vert", value: "#2ecc71" },
+  { name: "Rouge", value: "#e74c3c" },
+  { name: "Violet", value: "#9b59b6" },
+  { name: "Orange", value: "#e67e22" },
+  { name: "Turquoise", value: "#1abc9c" },
+];
+
+export function NewBoardModal({
+  isOpen,
+  onClose,
+  onCreateBoard,
+}: NewBoardModalProps) {
+  const [formData, setFormData] = useState<NewBoardData>({
+    title: "",
+    description: "",
+    backgroundColor: colorOptions[0].value,
+  });
+
+  const handleInputChange = (
+    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+  ) => {
+    const { name, value } = e.target;
+    setFormData((prev) => ({ ...prev, [name]: value }));
+  };
+
+  const handleColorSelect = (color: string) => {
+    setFormData((prev) => ({ ...prev, backgroundColor: color }));
+  };
+
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    onCreateBoard(formData);
+
+    // Réinitialiser le formulaire
+    setFormData({
+      title: "",
+      description: "",
+      backgroundColor: colorOptions[0].value,
+    });
+    onClose();
+  };
+
+  return (
+    <Dialog open={isOpen} onOpenChange={onClose}>
+      <DialogContent className="sm:max-w-[425px]">
+        <form onSubmit={handleSubmit}>
+          <DialogHeader>
+            <DialogTitle>Créer un nouveau tableau</DialogTitle>
+            <DialogDescription>
+              Ajoutez les informations de votre tableau ci-dessous.
+            </DialogDescription>
+          </DialogHeader>
+          <div className="grid gap-4 py-4">
+            <div className="grid grid-cols-4 items-center gap-4">
+              <Label htmlFor="title" className="text-right">
+                Titre
+              </Label>
+              <Input
+                id="title"
+                name="title"
+                value={formData.title}
+                onChange={handleInputChange}
+                className="col-span-3"
+                required
+                autoFocus
+              />
+            </div>
+            <div className="grid grid-cols-4 items-center gap-4">
+              <Label htmlFor="description" className="text-right">
+                Description
+              </Label>
+              <Textarea
+                id="description"
+                name="description"
+                value={formData.description}
+                onChange={handleInputChange}
+                className="col-span-3"
+              />
+            </div>
+            <div className="grid grid-cols-4 items-center gap-4">
+              <Label className="text-right">Couleur</Label>
+              <div className="flex flex-wrap gap-2 col-span-3">
+                {colorOptions.map((color) => (
+                  <div
+                    key={color.value}
+                    className="w-8 h-8 rounded-full cursor-pointer border-2 transition-all"
+                    style={{
+                      backgroundColor: color.value,
+                      borderColor:
+                        formData.backgroundColor === color.value
+                          ? "white"
+                          : color.value,
+                      outline:
+                        formData.backgroundColor === color.value
+                          ? "2px solid rgb(var(--primary))"
+                          : "",
+                    }}
+                    onClick={() => handleColorSelect(color.value)}
+                    title={color.name}
+                  />
+                ))}
+              </div>
+            </div>
+          </div>
+          <DialogFooter>
+            <Button type="button" variant="outline" onClick={onClose}>
+              Annuler
+            </Button>
+            <Button type="submit" disabled={!formData.title.trim()}>
+              Créer
+            </Button>
+          </DialogFooter>
+        </form>
+      </DialogContent>
+    </Dialog>
+  );
+}
+
+export default NewBoardModal;
