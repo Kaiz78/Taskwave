@@ -4,7 +4,8 @@ import * as jwt from 'jsonwebtoken';
 import { prisma } from '../server';
 import { config } from '../config/env';
 import { asyncWrapper, sendResponse } from '../utils/asyncWrapper';
-import { DiscordProvider, DiscordProfile } from '../services/auth/discordProvider'
+import { DiscordProvider, DiscordProfile } from '../services/auth/discordProvider';
+import { blacklistToken } from '../services/redis';
 
 // Message pour expliquer que l'authentification locale est désactivée
 export const register = asyncWrapper(async (req: Request, res: Response) => {
@@ -154,5 +155,39 @@ export const discordCallback = asyncWrapper(async (req: Request, res: Response) 
   } catch (error) {
     console.error('Erreur OAuth Discord:', error);
     return res.redirect(`${process.env.CLIENT_URL || 'http://localhost:5173'}/auth-callback?error=true`);
+  }
+});
+
+
+
+// Déconnexion de l'utilisateur
+export const logout = asyncWrapper(async (req: Request, res: Response) => {
+  try {
+    // Récupérer le token depuis la requête (ajouté par le middleware auth)
+    const token = req.headers.authorization?.split(' ')[1] || req.token;
+    
+    if (!token) {
+      return sendResponse(res, 400, null, 'Token non fourni');
+    }
+    
+    // Décoder le token pour obtenir sa durée de validité restante
+    const decoded: any = jwt.decode(token);
+    
+    if (!decoded || !decoded.exp) {
+      return sendResponse(res, 400, null, 'Token invalide');
+    }
+    
+    // Calculer la durée restante en secondes
+    const expiresIn = decoded.exp - Math.floor(Date.now() / 1000);
+    
+    // Si le token est encore valide, le blacklister
+    if (expiresIn > 0) {
+      await blacklistToken(token, expiresIn);
+    }
+    
+    return sendResponse(res, 200, null, 'Déconnexion réussie');
+  } catch (error) {
+    console.error('Erreur lors de la déconnexion:', error);
+    return sendResponse(res, 500, null, 'Erreur lors de la déconnexion');
   }
 });

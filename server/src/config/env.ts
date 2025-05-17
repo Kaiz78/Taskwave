@@ -10,6 +10,9 @@ export const config = {
   jwtExpiresIn: process.env.JWT_EXPIRES_IN || '1h',
   environment: process.env.NODE_ENV || 'development',
   
+  // Configuration Redis
+  redisHost: process.env.REDIS_HOST || 'localhost',
+  redisPort: parseInt(process.env.REDIS_PORT || '6379'),
   
   // Configuration OAuth Discord
   discordClientId: process.env.DISCORD_CLIENT_ID,

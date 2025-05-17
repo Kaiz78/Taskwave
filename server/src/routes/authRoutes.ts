@@ -1,6 +1,7 @@
 import express from 'express';
-import { register, login, getProfile, updateProfile, discordAuth, discordCallback } from '../controllers/authController';
+import { register, login, getProfile, updateProfile, discordAuth, discordCallback, logout } from '../controllers/authController';
 import { auth } from '../middleware/auth';
+
 
 const router = express.Router();
 
@@ -11,6 +12,8 @@ router.post('/login', login);
 // Routes OAuth
 router.get('/discord', discordAuth);
 router.get('/discord/callback', discordCallback);
+
+router.get('/logout', logout);
 
 // Routes protégées
 router.get('/profile', auth, getProfile);
