@@ -1,7 +1,7 @@
 import express from 'express';
-import { createBoard, getBoards, getBoardById, updateBoard, deleteBoard } from '../controllers/boardController';
-import { auth } from '../middleware/auth';
-import { validate, boardSchema } from '../middleware/validation';
+import { createBoard, getBoards, getBoardById, updateBoard, deleteBoard } from './boardController';
+import { auth } from '../../middleware/auth';
+import { validate, boardSchema } from '../../middleware/validation';
 
 const router = express.Router();
 

@@ -1,6 +1,6 @@
 import express from 'express';
-import { register, login, getProfile, updateProfile, discordAuth, discordCallback, logout } from '../controllers/authController';
-import { auth } from '../middleware/auth';
+import { register, login, getProfile, updateProfile, discordAuth, discordCallback, logout, deleteAccount } from './authController';
+import { auth } from '../../middleware/auth';
 
 
 const router = express.Router();
@@ -18,5 +18,6 @@ router.get('/logout', logout);
 // Routes protégées
 router.get('/profile', auth, getProfile);
 router.put('/profile', auth, updateProfile);
+router.delete('/account', auth, deleteAccount);
 
 export default router;

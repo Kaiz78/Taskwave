@@ -2,7 +2,7 @@ import { Request, Response, NextFunction } from 'express';
 import * as jwt from 'jsonwebtoken';
 import { config } from '../config/env';
 import { prisma } from '../server';
-import { isTokenBlacklisted } from '../services/redis';
+import { isTokenBlacklisted } from '../shared/redis';
 
 // Extension de l'interface Request pour y ajouter l'utilisateur
 declare global {

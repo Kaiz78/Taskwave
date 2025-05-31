@@ -1,8 +1,10 @@
 import express from 'express';
 import cors from 'cors';
 import { PrismaClient } from '@prisma/client';
-import authRoutes from './routes/authRoutes';
-import boardRoutes from './routes/boardRoutes';
+import authRoutes from './modules/auth/authRoutes';
+import boardRoutes from './modules/board/boardRoutes';
+import columnRoutes from './modules/column/columnRoutes';
+import taskRoutes from './modules/task/taskRoutes';
 import errorHandler from './utils/errorHandler';
 import corsOptions from './config/corsOptions';
 
@@ -27,7 +29,8 @@ prisma.$connect()
 app.get('/health', (_, res) => res.send('API is running'));
 app.use('/api/auth', authRoutes);
 app.use('/api/boards', boardRoutes);
-
+app.use('/api/columns', columnRoutes);
+app.use('/api/tasks', taskRoutes);
 
 // Gestion des erreurs
 app.use(errorHandler);

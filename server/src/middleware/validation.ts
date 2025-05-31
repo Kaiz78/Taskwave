@@ -35,7 +35,7 @@ export const boardSchema = z.object({
   backgroundColor: z.string().optional()
 });
 
-// Column
+// Column - Schéma complet pour création
 export const columnSchema = z.object({
   title: z.string().min(1, 'Le titre est requis'),
   boardId: z.string().min(1, 'L\'ID du tableau est requis'),
@@ -43,10 +43,17 @@ export const columnSchema = z.object({
   color: z.string().optional()
 });
 
-// Task
+// Column - Schéma pour mise à jour (tous les champs sont optionnels)
+export const columnUpdateSchema = z.object({
+  title: z.string().min(1, 'Le titre est requis').optional(),
+  position: z.number().int().nonnegative().optional(),
+  color: z.string().nullable().optional() // Accepte null, undefined ou une chaîne
+});
+
+// Task - Schéma complet pour création
 export const taskSchema = z.object({
   title: z.string().min(1, 'Le titre est requis'),
-  description: z.string().optional(),
+  description: z.string().optional().nullable(),
   columnId: z.string().min(1, 'L\'ID de la colonne est requis'),
   position: z.number().int().nonnegative(),
   priority: z.enum(['LOW', 'NORMAL', 'HIGH', 'URGENT']).optional(),
@@ -55,4 +62,24 @@ export const taskSchema = z.object({
   labels: z.array(z.string()).optional(),
   attachments: z.array(z.string()).optional(),
   completed: z.boolean().optional()
+});
+
+// Task - Schéma pour mise à jour (tous les champs sont optionnels)
+export const taskUpdateSchema = z.object({
+  title: z.string().min(1, 'Le titre est requis').optional(),
+  description: z.string().optional().nullable(),
+  columnId: z.string().optional(),
+  position: z.number().int().nonnegative().optional(),
+  priority: z.enum(['LOW', 'NORMAL', 'HIGH', 'URGENT']).optional(),
+  dueDate: z.string().optional().nullable(),
+  assigneeId: z.string().optional().nullable(),
+  labels: z.array(z.string()).optional(),
+  attachments: z.array(z.string()).optional(),
+  completed: z.boolean().optional()
+});
+
+// Task - Schéma spécifique pour le déplacement de tâches
+export const taskMoveSchema = z.object({
+  columnId: z.string().min(1, 'L\'ID de la colonne cible est requis'),
+  position: z.number().int().nonnegative()
 });
