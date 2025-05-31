@@ -70,7 +70,7 @@ L'interface utilisateur du Kanban de Taskwave est construite autour d'une expér
 2. **Déplacer les tâches entre colonnes** pour refléter leur progression
 3. **Réorganiser les colonnes** pour adapter le flux de travail
 
-Cette fonctionnalité est mise en œuvre à l'aide de la bibliothèque React DnD (Drag and Drop), qui offre une expérience utilisateur fluide tout en maintenant la cohérence de l'état.
+Cette fonctionnalité est mise en œuvre à l'aide de la bibliothèque React dnd-kit (Drag and Drop), qui offre une expérience utilisateur fluide tout en maintenant la cohérence de l'état.
 
 ```tsx
 // Exemple simplifié d'implémentation du drag and drop

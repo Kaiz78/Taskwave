@@ -120,36 +120,6 @@ L'expérience utilisateur de Taskwave a été conçue pour être intuitive et ef
 6. **Rapports et analyses** : Visualisation des performances et de l'avancement des projets
 
 
-## Feuille de Route du Projet
-
-Le développement de Taskwave suit une approche itérative, avec plusieurs phases clairement définies :
-
-1. **MVP (Produit Minimum Viable) - Q1 2024** :
-
-   - Authentification sécurisée avec Discord OAuth
-   - Interface utilisateur minimale avec navigation et sidebar responsive
-   - Création de projets et de colonnes personnalisées
-   - Création et affichage des tableaux kanban et des tâches basiques
-
-2. **Version 1.0 - Q2 2024** :
-
-   - Fonctionnalités complètes de kanban (filtres, étiquettes, archivage)
-   - Amélioration de l'interface utilisateur avec thèmes personnalisables
-   - Système de permissions et de rôles pour la collaboration en équipe
-   - Fonctionnalités de recherche et de tri avancées
-
-3. **Version 2.0 - Q4 2024** :
-
-   - Intégration avec des services tiers (GitHub, Slack, Google Calendar)
-   - Fonctionnalités avancées d'analyse et de reporting
-   - API publique pour extensions et intégrations personnalisées
-   - Applications mobiles natives pour iOS et Android
-
-4. **Vision à long terme** :
-   - Intelligence artificielle pour l'automatisation et les suggestions
-   - Fonctionnalités avancées de gestion de portefeuille de projets
-   - Solutions spécifiques pour différents secteurs (développement logiciel, marketing, etc.)
-
 ## Parcours de Développement
 
 La documentation qui suit détaille chronologiquement les étapes de développement, les défis rencontrés et les solutions implémentées pour chaque phase du projet Taskwave. Elle constitue à la fois un historique du projet et un guide pour les nouveaux contributeurs souhaitant comprendre l'architecture et les choix techniques effectués.
