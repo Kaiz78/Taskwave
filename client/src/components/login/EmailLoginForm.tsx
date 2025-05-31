@@ -27,6 +27,13 @@ export function EmailLoginForm({
 
   return (
     <form className="space-y-4" onSubmit={handleSubmit}>
+      {disabled && (
+        <div className="mt-1 text-center">
+          <span className="text-xs font-medium text-amber-600 dark:text-amber-300 border-1 border-amber-600 dark:border-amber-300 rounded-md p-2 bg-amber-50 dark:bg-amber-900/20">
+            Connexion par email/mot de passe bientôt disponible
+          </span>
+        </div>
+      )}
       <div className="space-y-2">
         <Label htmlFor="email">Email</Label>
         <div className="relative">
@@ -89,14 +96,6 @@ export function EmailLoginForm({
           Mot de passe oublié?
         </button>
       </div>
-
-      {disabled && (
-        <div className="mt-1 text-center">
-          <span className="text-xs font-medium text-amber-600 dark:text-amber-400">
-            Connexion par email/mot de passe bientôt disponible
-          </span>
-        </div>
-      )}
 
       <Button
         type="submit"

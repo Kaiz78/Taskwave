@@ -1,7 +1,7 @@
 import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
 import type { AuthState, User } from '@/types/auth.types';
-import { authService } from '@/services/api';
+import { authService } from '@/services/authService';
 
 const initialState: AuthState = {
   user: null,
@@ -16,6 +16,7 @@ const initialState: AuthState = {
 export const useAuthStore = create<AuthState & {
   setToken: (token: string) => void;
   logout: () => void;
+  deleteAccount: () => Promise<boolean>;
   setUser: (user: User) => void;
   setError: (error: string | null) => void;
   setLoading: (isLoading: boolean) => void;
@@ -29,6 +30,30 @@ export const useAuthStore = create<AuthState & {
       setToken: (token: string) => set({ token, isAuthenticated: true }),
       
       logout: () => set({ ...initialState }),
+      
+      deleteAccount: async () => {
+        const { token } = get();
+        
+        if (!token) {
+          set({ error: 'Pas de token disponible' });
+          return false;
+        }
+        
+        set({ isLoading: true });
+        
+        try {
+          await authService.deleteAccount(token);
+          set({ ...initialState });
+          return true;
+        } catch (error) {
+          console.error('Erreur lors de la suppression du compte:', error);
+          set({
+            isLoading: false,
+            error: 'Erreur lors de la suppression du compte'
+          });
+          return false;
+        }
+      },
       
       setUser: (user: User) => set({ 
         user: user.name,

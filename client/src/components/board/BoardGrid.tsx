@@ -1,72 +1,73 @@
-import { useNavigate } from "react-router-dom";
-import { useState } from "react";
 import BoardCard from "./BoardCard";
 import EditBoardModal from "./EditBoardModal";
 import DeleteBoardModal from "./DeleteBoardModal";
-import { useBoardStore } from "@/store/useBoardStore";
 import { FiSearch, FiDatabase } from "react-icons/fi";
 import type { BoardData as BoardDataType } from "@/types/board.types";
+import { BOARD_TEXT, BOARD_UI } from "@/constants/board";
 
 interface BoardGridProps {
   boards: BoardDataType[];
   isFiltered?: boolean;
+  selectedBoard: BoardDataType | null;
+  editModalOpen: boolean;
+  deleteModalOpen: boolean;
+  handleBoardClick: (boardId: string) => void;
+  handleEditBoard: (boardId: string) => void;
+  handleDeleteBoard: (boardId: string) => void;
+  handleViewDetails: (boardId: string) => void;
+  confirmDeleteBoard: () => void;
+  closeEditModal: () => void;
+  closeDeleteModal: () => void;
+  handleUpdateBoard: (boardId: string, data: Partial<BoardDataType>) => void;
+  editBoardFormData: {
+    title: string;
+    description: string;
+    backgroundColor: string;
+  };
+  handleEditBoardInputChange: (
+    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+  ) => void;
+  handleEditBoardColorSelect: (color: string) => void;
+  isEditBoardFormValid: boolean;
+  boardColors: Array<{ name: string; value: string }>;
 }
 
-export function BoardGrid({ boards, isFiltered = false }: BoardGridProps) {
-  const navigate = useNavigate();
-  const { updateBoard, deleteBoard, fetchBoardDetails } = useBoardStore();
-
-  // États pour les modaux
-  const [editModalOpen, setEditModalOpen] = useState(false);
-  const [deleteModalOpen, setDeleteModalOpen] = useState(false);
-  const [selectedBoard, setSelectedBoard] = useState<BoardDataType | null>(
-    null
-  );
-
-  const handleBoardClick = (boardId: string) => {
-    // Rediriger vers la page du tableau sélectionné
-    navigate(`/boards/${boardId}`);
-  };
-
-  const handleEditBoard = (boardId: string) => {
-    // Trouver le tableau à éditer
-    const boardToEdit = boards.find((board) => board.id === boardId);
-    if (boardToEdit) {
-      setSelectedBoard(boardToEdit);
-      setEditModalOpen(true);
-    }
-  };
-
-  const handleDeleteBoard = (boardId: string) => {
-    // Trouver le tableau à supprimer
-    const boardToDelete = boards.find((board) => board.id === boardId);
-    if (boardToDelete) {
-      setSelectedBoard(boardToDelete);
-      setDeleteModalOpen(true);
-    }
-  };
-
-  const handleViewDetails = (boardId: string) => {
-    fetchBoardDetails(boardId);
-    navigate(`/boards/${boardId}`);
-  };
-
-  // Confirmer la suppression d'un tableau
-  const confirmDeleteBoard = () => {
-    if (selectedBoard) {
-      deleteBoard(selectedBoard.id);
-    }
-  };
-
+export function BoardGrid({
+  boards,
+  isFiltered = false,
+  selectedBoard,
+  editModalOpen,
+  deleteModalOpen,
+  handleBoardClick,
+  handleEditBoard,
+  handleDeleteBoard,
+  handleViewDetails,
+  confirmDeleteBoard,
+  closeEditModal,
+  closeDeleteModal,
+  handleUpdateBoard,
+  editBoardFormData,
+  handleEditBoardInputChange,
+  handleEditBoardColorSelect,
+  isEditBoardFormValid,
+  boardColors,
+}: BoardGridProps) {
   // Afficher un message si aucun tableau n'est trouvé lors du filtrage
   if (isFiltered && boards.length === 0) {
     return (
-      <div className="flex flex-col items-center justify-center p-10 bg-muted/30 rounded-lg mt-4">
-        <FiSearch className="h-12 w-12 text-muted-foreground mb-4" />
-        <h3 className="text-xl font-medium">Aucun tableau trouvé</h3>
-        <p className="text-muted-foreground text-center mt-2">
-          Essayez de modifier vos critères de recherche ou créez un nouveau
-          tableau.
+      <div
+        className={`flex flex-col items-center justify-center ${BOARD_UI.EMPTY_STATE_PADDING}`}
+      >
+        <FiSearch
+          className={`${BOARD_UI.EMPTY_STATE_ICON_SIZE} text-muted-foreground ${BOARD_UI.EMPTY_STATE_ICON_MARGIN}`}
+        />
+        <h3 className={BOARD_UI.EMPTY_STATE_TITLE_SIZE}>
+          {BOARD_TEXT.NO_RESULTS_TITLE}
+        </h3>
+        <p
+          className={`text-muted-foreground text-center ${BOARD_UI.EMPTY_STATE_TEXT_MARGIN}`}
+        >
+          {BOARD_TEXT.NO_RESULTS_MESSAGE}
         </p>
       </div>
     );
@@ -75,14 +76,19 @@ export function BoardGrid({ boards, isFiltered = false }: BoardGridProps) {
   // Afficher un message si la liste des tableaux est vide (sans filtrage)
   if (!isFiltered && boards.length === 0) {
     return (
-      <div className="flex flex-col items-center justify-center p-10 bg-muted/30 rounded-lg mt-4">
-        <FiDatabase className="h-12 w-12 text-muted-foreground mb-4" />
-        <h3 className="text-xl font-medium">
-          Commencez à organiser vos projets
+      <div
+        className={`flex flex-col items-center justify-center ${BOARD_UI.EMPTY_STATE_PADDING}`}
+      >
+        <FiDatabase
+          className={`${BOARD_UI.EMPTY_STATE_ICON_SIZE} text-muted-foreground ${BOARD_UI.EMPTY_STATE_ICON_MARGIN}`}
+        />
+        <h3 className={BOARD_UI.EMPTY_STATE_TITLE_SIZE}>
+          {BOARD_TEXT.NO_BOARDS_TITLE}
         </h3>
-        <p className="text-muted-foreground text-center mt-2">
-          Vous n'avez pas encore créé de tableaux. Cliquez sur le bouton
-          "Nouveau tableau" pour commencer.
+        <p
+          className={`text-muted-foreground text-center ${BOARD_UI.EMPTY_STATE_TEXT_MARGIN}`}
+        >
+          {BOARD_TEXT.NO_BOARDS_MESSAGE}
         </p>
       </div>
     );
@@ -90,7 +96,7 @@ export function BoardGrid({ boards, isFiltered = false }: BoardGridProps) {
 
   return (
     <>
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+      <div className={BOARD_UI.GRID_LAYOUT}>
         {boards.map((board) => (
           <BoardCard
             key={board.id}
@@ -106,9 +112,14 @@ export function BoardGrid({ boards, isFiltered = false }: BoardGridProps) {
       {/* Modal d'édition */}
       <EditBoardModal
         isOpen={editModalOpen}
-        onClose={() => setEditModalOpen(false)}
-        onUpdateBoard={updateBoard}
+        onClose={closeEditModal}
+        onUpdateBoard={handleUpdateBoard}
         board={selectedBoard}
+        formData={editBoardFormData}
+        onInputChange={handleEditBoardInputChange}
+        onColorSelect={handleEditBoardColorSelect}
+        isFormValid={isEditBoardFormValid}
+        colorOptions={boardColors}
       />
 
       {/* Modal de confirmation de suppression */}
@@ -116,7 +127,7 @@ export function BoardGrid({ boards, isFiltered = false }: BoardGridProps) {
         <DeleteBoardModal
           isOpen={deleteModalOpen}
           boardTitle={selectedBoard.title}
-          onClose={() => setDeleteModalOpen(false)}
+          onClose={closeDeleteModal}
           onConfirm={confirmDeleteBoard}
         />
       )}

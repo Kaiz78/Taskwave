@@ -11,6 +11,7 @@ export interface BoardData {
   columnsCount: number;
   tasksCount: number;
   createdAt: Date;
+  columns?: import('./kanban.types').Column[]; // Ajouter les colonnes au type BoardData
 }
 
 // Type pour les données d'un nouveau tableau

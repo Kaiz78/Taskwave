@@ -1,7 +1,7 @@
-
+// filepath: /home/amine/git/aletwork/Taskwave/client/src/pages/AuthCallback.tsx
 import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { authService } from "@/services/api";
+import { authService } from "@/services/authService";
 import { useAuthStore } from "@/store/useAuthStore";
 
 export default function AuthCallback() {
@@ -33,7 +33,10 @@ export default function AuthCallback() {
           // Rediriger vers la page principale
           navigate("/");
         } catch (err: unknown) {
-          console.error("Erreur lors de la récupération du profil utilisateur:", err);
+          console.error(
+            "Erreur lors de la récupération du profil utilisateur:",
+            err
+          );
           // En cas d'erreur, rediriger vers la page de login
           navigate("/login");
         }
@@ -48,14 +51,14 @@ export default function AuthCallback() {
   }, [navigate, setToken, setError, fetchUserProfile]);
 
   return (
-    <div className="flex h-screen w-full items-center justify-center">
-      <div className="text-center">
+    <div className="flex h-screen w-full items-center justify-center bg-background">
+      <div className="w-full max-w-md rounded-md border bg-card p-8 text-center">
         <h1 className="text-2xl font-bold">Authentification en cours...</h1>
-        <p className="mt-2 text-gray-600">
+        <p className="mt-2 text-muted-foreground">
           Veuillez patienter pendant que nous finalisons votre connexion.
         </p>
-        <div className="mt-4 h-2 w-full overflow-hidden rounded-full bg-gray-200">
-          <div className="h-full w-1/2 animate-[pulse_1.5s_infinite_ease-in-out] rounded-full bg-blue-500"></div>
+        <div className="mt-4 h-2 w-full overflow-hidden rounded-full bg-secondary">
+          <div className="h-full w-1/2 animate-[pulse_1.5s_infinite_ease-in-out] rounded-full bg-primary"></div>
         </div>
       </div>
     </div>

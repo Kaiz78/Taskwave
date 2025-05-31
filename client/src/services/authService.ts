@@ -53,5 +53,31 @@ export const authService = {
       console.error('Erreur lors de la récupération du profil:', error);
       throw error;
     }
+  },
+  
+  /**
+   * Supprime le compte utilisateur et toutes les données associées
+   * @param token JWT token
+   */
+  async deleteAccount(token: string) {
+    try {
+      const response = await fetch(`${API_BASE_URL}/auth/account`, {
+        method: 'DELETE',
+        headers: {
+          'Authorization': `Bearer ${token}`,
+          'Content-Type': 'application/json'
+        }
+      });
+
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.message || 'Échec de la suppression du compte');
+      }
+
+      return await response.json();
+    } catch (error) {
+      console.error('Erreur lors de la suppression du compte:', error);
+      throw error;
+    }
   }
 };

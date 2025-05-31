@@ -9,7 +9,7 @@ import {
 import {
   FiCalendar,
   FiMoreVertical,
-  FiInfo,
+  FiEye,
   FiEdit,
   FiTrash2,
 } from "react-icons/fi";
@@ -21,6 +21,7 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import { BOARD_UI } from "@/constants/board";
 
 export interface BoardCardProps {
   id: string;
@@ -57,15 +58,15 @@ export function BoardCard({
   return (
     <Card
       className={cn(
-        "cursor-pointer transition-all hover:shadow-md relative",
-        backgroundColor ? "border-l-4" : ""
+        `cursor-pointer ${BOARD_UI.CARD_HOVER} relative`,
+        backgroundColor ? BOARD_UI.CARD_COLOR_INDICATOR : ""
       )}
       style={backgroundColor ? { borderLeftColor: backgroundColor } : undefined}
       onClick={onClick}
     >
-      <CardHeader className="pb-2">
+      <CardHeader className={BOARD_UI.CARD_HEADER_PADDING}>
         <div className="flex justify-between items-start">
-          <CardTitle className="text-lg font-bold">{title}</CardTitle>
+          <CardTitle className={BOARD_UI.CARD_TITLE_SIZE}>{title}</CardTitle>
 
           <DropdownMenu>
             <DropdownMenuTrigger asChild onClick={handleActionClick}>
@@ -82,8 +83,8 @@ export function BoardCard({
                     onViewDetails(id);
                   }}
                 >
-                  <FiInfo className="mr-2 h-4 w-4" />
-                  <span>Détails</span>
+                  <FiEye className="mr-2 h-4 w-4" />
+                  <span>Voir</span>
                 </DropdownMenuItem>
               )}
               {onEdit && (
@@ -131,7 +132,9 @@ export function BoardCard({
           </div>
         </div>
       </CardContent>
-      <CardFooter className="pt-2 text-xs text-muted-foreground flex items-center">
+      <CardFooter
+        className={`${BOARD_UI.CARD_FOOTER_PADDING} ${BOARD_UI.CARD_FOOTER_TEXT} flex items-center`}
+      >
         <FiCalendar className="mr-1 h-3 w-3" />
         {`Créé ${formatDistanceToNow(createdAt, {
           addSuffix: true,
