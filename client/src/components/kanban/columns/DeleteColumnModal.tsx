@@ -1,4 +1,4 @@
-import React from "react";
+
 import { KANBAN_TEXT } from "@/constants/kanban";
 import CommonModal from "@/components/common/CommonModal";
 import { AlertCircle } from "lucide-react";

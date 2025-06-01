@@ -23,6 +23,7 @@ export function useTaskPage() {
   const [searchTerm, setSearchTerm] = useState("");
   const [filterPriority, setFilterPriority] = useState<string>("all");
   const [filterBoard, setFilterBoard] = useState<string>("all");
+  const [filterStatus, setFilterStatus] = useState<string>("all");
 
   // État pour le modal de détails
   const [selectedTask, setSelectedTask] = useState<EnhancedTask | null>(null);
@@ -124,9 +125,15 @@ export function useTaskPage() {
         filterBoard === "all" ||
         (task.boardId && task.boardId === filterBoard);
 
-      return searchMatch && priorityMatch && boardMatch;
+      // Filtre par statut
+      const statusMatch =
+        filterStatus === "all" ||
+        (filterStatus === "completed" && task.completed) ||
+        (filterStatus === "in-progress" && !task.completed);
+
+      return searchMatch && priorityMatch && boardMatch && statusMatch;
     });
-  }, [tasks, searchTerm, filterPriority, filterBoard]);
+  }, [tasks, searchTerm, filterPriority, filterBoard, filterStatus]);
 
   // Calculer les tâches à afficher sur la page actuelle
   const indexOfLastTask = currentPage * tasksPerPage;
@@ -205,6 +212,12 @@ export function useTaskPage() {
     setCurrentPage(1); // Retour à la première page après filtrage
   };
 
+  // Gérer le changement du filtre de statut
+  const handleStatusFilter = (option: string) => {
+    setFilterStatus(option);
+    setCurrentPage(1); // Retour à la première page après filtrage
+  };
+
   // Gérer la recherche
   const handleSearch = (query: string) => {
     setSearchTerm(query);
@@ -225,6 +238,7 @@ export function useTaskPage() {
     searchTerm,
     filterPriority,
     filterBoard,
+    filterStatus,
     selectedTask,
     isModalOpen,
     uniqueBoards,
@@ -234,6 +248,7 @@ export function useTaskPage() {
     handleTasksChanged,
     handlePriorityFilter,
     handleBoardFilter,
+    handleStatusFilter,
     handleSearch,
     taskHandlers
   };

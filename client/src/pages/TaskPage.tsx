@@ -41,6 +41,7 @@ export default function TaskPage() {
     handleTasksChanged,
     handlePriorityFilter,
     handleBoardFilter,
+    handleStatusFilter,
     handleSearch,
     paginate,
   } = useTaskPage();
@@ -52,6 +53,13 @@ export default function TaskPage() {
     normal: TASK.PRIORITY.NORMAL,
     high: TASK.PRIORITY.HIGH,
     urgent: TASK.PRIORITY.URGENT,
+  };
+
+  // Options de statut pour le filtre
+  const statusOptions = {
+    all: "Tous les statuts",
+    completed: "Terminée",
+    "in-progress": "En cours",
   };
 
   // Fonction pour convertir la priorité en badge avec couleur
@@ -121,6 +129,12 @@ export default function TaskPage() {
             buttonText="Tableau"
             dropdownLabel="Filtrer par tableau"
             sortOptions={uniqueBoards}
+          />
+          <FilterBar
+            onFilterChange={handleStatusFilter}
+            buttonText="Statut"
+            dropdownLabel="Filtrer par statut"
+            sortOptions={statusOptions}
           />
         </div>
 
