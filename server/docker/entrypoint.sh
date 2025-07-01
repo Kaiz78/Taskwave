@@ -4,9 +4,10 @@
 npm install
 
 
+npm run build
 # Génération du client Prisma
-npx prisma generate
+# npx prisma generate
 
 # Démarrer le serveur en mode développement
 echo "Starting development server..."
-npm run dev
+npm run start
