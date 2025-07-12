@@ -47,6 +47,10 @@ function BoardPage() {
     isEditBoardFormValid,
   } = useBoardPage();
 
+
+// erreur custome 
+   console.error("Error loading boards:");
+  
   return (
     <div className={BOARD_UI.PAGE_PADDING}>
       <div

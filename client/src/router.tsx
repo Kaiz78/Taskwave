@@ -38,9 +38,9 @@ const ProtectedRoute = () => {
     );
   }
 
-  // Si non authentifié, rediriger vers la page de login
+  // Si non authentifié, rediriger vers la landing page
   if (!isAuthenticated) {
-    return <Navigate to="/login" replace />;
+    return <Navigate to="/landing" replace />;
   }
 
   // Si authentifié, afficher le contenu protégé avec Layout

@@ -1,4 +1,4 @@
-import { Footer } from "@/components/common/Footer";
+import { Footer } from "@/components/Footer";
 import { Logo } from "@/components/common/Logo";
 import { Divider } from "@/components/common/Divider";
 import { EmailLoginForm } from "@/components/login/EmailLoginForm";
@@ -7,6 +7,9 @@ import { useAuthStore } from "@/store/useAuthStore";
 import { FaDiscord } from "react-icons/fa";
 
 export default function LoginPage() {
+  const VITE_API_URL = import.meta.env.VITE_API_URL;
+
+  console.log(VITE_API_URL);
   const loginWithDiscord = useAuthStore((state) => state.loginWithDiscord);
   const error = useAuthStore((state) => state.error);
   return (

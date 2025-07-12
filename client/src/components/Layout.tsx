@@ -3,6 +3,7 @@ import { useState } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { FaSignOutAlt } from "react-icons/fa";
+import { BiInfoCircle } from "react-icons/bi";
 import {
   Sidebar,
   SidebarGroup,
@@ -164,6 +165,26 @@ export function Layout({ children }: LayoutProps) {
             <div className="flex items-center gap-2">
               {/* Darkmode */}
               <ThemeToggle />
+            </div>
+          </div>
+
+          {/* Banderole Beta */}
+          <div className="bg-primary/10 text-primary px-4 py-1.5 text-center relative">
+            <span className="font-medium">Version Beta</span>
+            <span className="ml-2 text-sm">
+              Découvrez les fonctionnalités à venir et signalez des bugs sur
+              notre{" "}
+              <Button
+                variant="link"
+                className="p-0 h-auto text-primary font-medium underline underline-offset-2"
+                onClick={() => navigate("/landing")}
+              >
+                <BiInfoCircle className="inline mr-1" />
+                page d'information
+              </Button>
+            </span>
+            <div className="absolute top-0 right-0 bg-primary text-primary-foreground text-xs px-2 py-0.5 font-bold rounded-bl-md">
+              BETA
             </div>
           </div>
 

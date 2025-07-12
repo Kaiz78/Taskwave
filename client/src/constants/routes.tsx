@@ -8,6 +8,8 @@ import BoardDetailsPage from "../pages/BoardDetails";
 import SettingsPage from "../pages/Settings";
 import TaskPage from "../pages/TaskPage";
 import HelpPage from "../pages/Help";
+import LandingPage from "../pages/LandingPage";
+import BugReport from "../pages/BugReport";
 
 /**
  * Configuration des routes de l'application
@@ -51,9 +53,19 @@ export const APP_ROUTES: RouteConfig[] = [
     path: "/auth-callback",
     element: <AuthCallback />,
   },
+  // Landing page publique
+  {
+    path: "/landing",
+    element: <LandingPage />,
+  },
+  // Page de rapport de bug
+  {
+    path: "/bug-report",
+    element: <BugReport />,
+  },
   // Route de fallback pour les URLs non trouvées
   {
     path: "*",
-    element: <Navigate to="/" replace />,
+    element: <Navigate to="/landing" replace />,
   },
 ];

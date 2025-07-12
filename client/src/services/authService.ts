@@ -79,5 +79,32 @@ export const authService = {
       console.error('Erreur lors de la suppression du compte:', error);
       throw error;
     }
+  },
+
+  /**
+   * Échange le code d'autorisation contre un token JWT
+   * @param code Code d'autorisation reçu après l'authentification Discord
+   */
+  async exchangeCodeForToken(code: string) {
+    try {
+      const response = await fetch(`${API_BASE_URL}/auth/exchange-code`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ code }),
+      });
+
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.message || 'Erreur lors de l\'échange du code');
+      }
+
+      const data = await response.json();
+      return data;
+    } catch (error) {
+      console.error('Erreur lors de l\'échange du code:', error);
+      throw error;
+    }
   }
 };

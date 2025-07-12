@@ -12,8 +12,10 @@ export default function AuthCallback() {
 
   useEffect(() => {
     const handleAuthCallback = async () => {
-      // Récupérer le token ou l'erreur depuis l'URL
-      const { token, error } = authService.getTokenFromCallback();
+      // Récupérer le code d'autorisation ou l'erreur depuis l'URL
+      const urlParams = new URLSearchParams(window.location.search);
+      const code = urlParams.get("code");
+      const error = urlParams.get("error");
 
       // Si une erreur est présente, la stocker et rediriger vers la page de login
       if (error) {
@@ -23,26 +25,35 @@ export default function AuthCallback() {
         return;
       }
 
-      // Si le token est présent, le stocker et récupérer le profil utilisateur
-      if (token) {
-        setToken(token);
+      // Si le code d'autorisation est présent, l'échanger contre le token
+      if (code) {
         try {
-          // Récupérer les informations de l'utilisateur
-          await fetchUserProfile();
+          // Échanger le code contre le token via l'API
+          const response = await authService.exchangeCodeForToken(code);
 
-          // Rediriger vers la page principale
-          navigate("/");
+          if (response.success && response.data.token) {
+            setToken(response.data.token);
+
+            // Récupérer les informations de l'utilisateur
+            await fetchUserProfile();
+
+            // Rediriger vers la page principale
+            navigate("/");
+          } else {
+            setError("Erreur lors de l'échange du code d'autorisation");
+            navigate("/login");
+          }
         } catch (err: unknown) {
           console.error(
-            "Erreur lors de la récupération du profil utilisateur:",
+            "Erreur lors de l'échange du code d'autorisation:",
             err
           );
-          // En cas d'erreur, rediriger vers la page de login
-          navigate("/login");
+          setError("Erreur lors de l'authentification");
+          // navigate("/login");
         }
       } else {
-        // Si pas de token ni d'erreur, c'est une situation inattendue
-        setError("Pas de token reçu de l'authentification");
+        // Si pas de code ni d'erreur, c'est une situation inattendue
+        setError("Pas de code d'autorisation reçu");
         navigate("/login");
       }
     };
